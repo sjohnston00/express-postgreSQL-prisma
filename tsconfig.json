@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "ESNext",
+    "strict": true,
+    "moduleResolution": "node",
+    "removeComments": true,
+    "outDir": "dist",
+    // "outFile": "index.js",
+    // "sourceMap": true,
+    // "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+    // "noImplicitAny": false,
+    // "typeRoots": ["./types"]
+  },
+  "exclude": ["node_modules", "./dist/"]
+}
