@@ -1,34 +1,34 @@
-import { PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 async function main() {
   //CREATE ROLES
   const userRole = await prisma.role.upsert({
     where: { id: 1 },
     update: {},
     create: {
-      name: "User",
-    },
-  })
+      name: "User"
+    }
+  });
 
   const adminRole = await prisma.role.upsert({
     where: { id: 2 },
     update: {},
     create: {
       id: 2,
-      name: "Admin",
-    },
-  })
+      name: "Admin"
+    }
+  });
 
   const staffRole = await prisma.role.upsert({
     where: { id: 3 },
     update: {},
     create: {
       id: 3,
-      name: "Staff",
-    },
-  })
+      name: "Staff"
+    }
+  });
 
-  const email = "johnstonsam712@gmail.com"
+  const email = "johnstonsam712@gmail.com";
   const sam = await prisma.user.upsert({
     where: { email: email },
     update: {},
@@ -37,13 +37,9 @@ async function main() {
       firstname: "Sam",
       lastname: "Johnston",
       age: 22,
-      role: {
-        connect: {
-          id: 2,
-        },
-      },
-    },
-  })
+      roleId: 2
+    }
+  });
 
   const melissa = await prisma.user.upsert({
     where: { email: "melistammers@hotmail.com" },
@@ -53,24 +49,20 @@ async function main() {
       firstname: "Melissa",
       lastname: "Stammers",
       age: 23,
-      role: {
-        connect: {
-          id: 1,
-        },
-      },
-    },
-  })
+      roleId: 1
+    }
+  });
   console.log({
     users: [sam, melissa],
-    roles: [userRole, adminRole, staffRole],
-  })
+    roles: [userRole, adminRole, staffRole]
+  });
 }
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

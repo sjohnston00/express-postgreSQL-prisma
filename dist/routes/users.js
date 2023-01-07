@@ -4,6 +4,7 @@ import { z } from "zod";
 const prisma = new PrismaClient();
 const router = express.Router();
 import "express-async-errors";
+import { checkIdParamIsNumber, checkUserExistsByID } from "../middlewares/index.js";
 const userSchema = z.object({
     firstname: z
         .string({
@@ -43,13 +44,8 @@ router.get("/", async (req, res) => {
     });
     res.json(users);
 });
-router.get("/:id", async (req, res) => {
+router.get("/:id", checkIdParamIsNumber, async (req, res) => {
     const userId = Number(req.params.id);
-    if (!userId || typeof userId !== "number") {
-        return res.status(400).json({
-            message: "ID must be a number"
-        });
-    }
     const user = await prisma.user.findFirst({
         where: {
             id: userId
@@ -68,25 +64,21 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
     const newUser = userSchema.parse(req.body);
     const { id } = await prisma.user.create({
-        data: Object.assign(Object.assign({}, newUser), { role: {
-                connectOrCreate: {
-                    create: {
-                        name: "User",
-                        id: 1
-                    },
-                    where: {
-                        id: 1
-                    }
-                }
-            } }),
-        include: {
-            role: true
-        }
+        data: newUser
     });
     res.status(201).json({
         data: {
             id
         }
     });
+});
+router.delete("/:id", checkIdParamIsNumber, checkUserExistsByID, async (req, res) => {
+    const userId = Number(req.params.id);
+    await prisma.user.delete({
+        where: {
+            id: userId
+        }
+    });
+    res.end();
 });
 export default router;
